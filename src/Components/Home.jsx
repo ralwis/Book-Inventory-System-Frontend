@@ -35,6 +35,19 @@ function Home() {
           console.error(error);
         }
     };
+
+    const deleteBook = async (id) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this book?');
+        if (confirmDelete) {
+            try {
+                axios.delete(`${apiBaseUrl}/${id}`).then(() => {
+                    getAllBooks();
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
     
   return (
     <div>
@@ -43,6 +56,7 @@ function Home() {
             {books.map((book) => (
             <li key={book.id}>
                 {book.title} by {book.author} 
+                <button onClick={() => deleteBook(book.id)}>Delete</button>
             </li>
             ))}
         </ul>

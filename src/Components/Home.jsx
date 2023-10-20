@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import './HomeStyles.css'
 
 function Home() {
     const [books, setBooks] = useState([]);
@@ -13,6 +14,7 @@ function Home() {
     const [updateBook, setUpdateBook] = useState({});
     const [selectedBook, setSelectedBook] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [isAddBookPopupOpen, setIsAddBookPopupOpen] = useState(false);
 
     const apiBaseUrl = 'http://localhost:5029/api/Books';
 
@@ -34,13 +36,14 @@ function Home() {
           await axios.post(apiBaseUrl, newBook);
           setNewBook({});
           getAllBooks();
+          closeAddBookPopup();
         } catch (error) {
           console.error(error);
         }
     };
 
     const deleteBook = async (id) => {
-        const confirmDelete = window.confirm('Are you sure you want to delete this book?');
+        const confirmDelete = window.confirm('Are you sure to delete this book?');
         if (confirmDelete) {
             try {
                 axios.delete(`${apiBaseUrl}/${id}`).then(() => {
@@ -70,64 +73,91 @@ function Home() {
             setUpdateBook({});
             setSelectedBook(null);
             getAllBooks();
+            setIsEditing(false); 
           } catch (error) {
             console.error(error);
           }
         }
     };
+
+    const openAddBookPopup = () => {
+        setIsAddBookPopupOpen(true);
+    };
+
+    const closeAddBookPopup = () => {
+        setIsAddBookPopupOpen(false);
+    };
     
   return (
     <div>
-        <h2>Books Inventory System</h2>
-        <ul>
-            {books.map((book) => (
-            <li key={book.id}>
-                {book.title} by {book.author} 
-                <button onClick={() => editBook(book)}>Edit</button>
-                <button onClick={() => deleteBook(book.id)}>Delete</button>
-            </li>
-            ))}
-        </ul>
+        <div className='navbar'>
+            <h2>Books Inventory System</h2>
+            <button onClick={openAddBookPopup}>Add Book</button>
+        </div>
 
-        {isEditing && (
-            <div>
-            <h2>Edit Book</h2>
-            <input
-                type="text"
-                placeholder="Title"
-                value={updateBook.title || ''}
-                onChange={(e) => setUpdateBook({ ...updateBook, title: e.target.value })}
-            />
-            <input
-                type="text"
-                placeholder="Author"
-                value={updateBook.author || ''}
-                onChange={(e) => setUpdateBook({ ...updateBook, author: e.target.value })}
-            />
-            <input
-                type="text"
-                placeholder="ISBN"
-                value={updateBook.isbn || ''}
-                onChange={(e) => setUpdateBook({ ...updateBook, isbn: e.target.value })}
-            />
-            <input
-                type="date"
-                placeholder="Publication Date"
-                value={updateBook.publicationDate || ''}
-                onChange={(e) => setUpdateBook({ ...updateBook, publicationDate: e.target.value })}
-            />
+        <div className='addnewbook'>
+            {isAddBookPopupOpen && (
+                <div className="add-book-popup">
+                    <h2>Add New Book</h2>
+                    <div className="input-group">
+                        <input type="text" placeholder="Title" value={newBook.title || ''} onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}/>
+                        <input type="text" placeholder="Author" value={newBook.author || ''} onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}/>
+                    </div>
+                    <div className="input-group">
+                        <input type="text" placeholder="ISBN" value={newBook.isbn || ''} onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })}/>
+                        <input type="date" placeholder="Publication Date" value={newBook.publicationDate || ''} onChange={(e) => setNewBook({ ...newBook, publicationDate: e.target.value })}/>
+                    </div>
+                    <div className="buttons">
+                        <button onClick={addBook}>Add Book</button>
+                        <button onClick={closeAddBookPopup} className="cancel">Cancel</button>
+                    </div>
+                </div>
+            )}
+        </div>
+
+        <div className='addnewbook'>
+            {isEditing && (
+                <div className="add-book-popup">
+                    <h2>Edit Book</h2>
+                    <div className="input-group">
+                        <input type="text" placeholder="Title" value={updateBook.title || ''} onChange={(e) => setUpdateBook({ ...updateBook, title: e.target.value })} />
+                        <input type="text" placeholder="Author" value={updateBook.author || ''} onChange={(e) => setUpdateBook({ ...updateBook, author: e.target.value })}/>
+                    </div>
+                    <div className="input-group">
+                        <input type="text" placeholder="ISBN" value={updateBook.isbn || ''} onChange={(e) => setUpdateBook({ ...updateBook, isbn: e.target.value })}/>
+                        <input type="date" placeholder="Publication Date" value={updateBook.publicationDate || ''} onChange={(e) => setUpdateBook({ ...updateBook, publicationDate: e.target.value })}/>
+                    </div>
+                    <div className="buttons">
+                        <button onClick={updateSelectedBook}>Update Book</button>
+                        <button onClick={cancelEdit} className="cancel">Cancel</button>
+                    </div>
+                </div>
+            )}
             
-            <button onClick={updateSelectedBook}>Update Book</button>
-            <button onClick={cancelEdit}>Cancel</button>
-            </div>
-        )}
+        </div>
 
-        <h2>Add New Book</h2>
-        <input type="text" placeholder="Title" value={newBook.title || ''} onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}/>
-        <input type="text" placeholder="Author" value={newBook.author || ''} onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}/>
-        <input type="text" placeholder="ISBN" value={newBook.isbn || ''} onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })}/>
-        <input type="date" placeholder="Publication Date" value={newBook.publicationDate || ''} onChange={(e) => setNewBook({ ...newBook, publicationDate: e.target.value })}/>
-        <button onClick={addBook}>Add Book</button>
+        <div className='booktable'>
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                {books.map((book) => (
+                <tr key={book.id}>
+                    <td>{book.title}</td>
+                    <td>{book.author}</td>
+                    <td>
+                        <button className="edit-button" onClick={() => editBook(book)}>Edit</button>
+                    </td>
+                    <td>
+                        <button className="delete-button" onClick={() => deleteBook(book.id)}>Delete</button>
+                    </td>
+                </tr>
+                ))}
+            </table>
+        </div>
     </div>
   )
 }

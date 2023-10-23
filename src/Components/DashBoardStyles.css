@@ -1,0 +1,98 @@
+.navbar{
+    overflow: hidden;
+    background-color: #333;
+    padding: 15px 40px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+}
+
+.shelvesContainer {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px; 
+}
+
+.shelveCard {
+    background-color: #ede7e7;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex-basis: calc(33.33% - 20px); 
+    margin-bottom: 10px; 
+    cursor: pointer;
+}
+
+.shelveCard:hover {
+    background-color: #c8bdbd;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    flex-basis: calc(33.33% - 20px); 
+    margin-bottom: 10px; 
+    cursor: pointer;
+}
+
+.shelveCard h4 {
+    text-align: center;
+}
+
+.addNewShelve {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.add-shelve-popup {
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 15px 30px;
+    display: inline-block;
+}
+
+.add-shelve-popup span {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.add-shelve-popup input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.buttons {
+    text-align: center;
+}
+
+.addButton, .cancelButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.addButton {
+    background-color: #0074cc;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.addButton:hover {
+    background-color: #005ba8;
+}
+
+.cancelButton {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.cancelButton:hover{
+    background-color: #9a2727;
+}

@@ -2,14 +2,26 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './HomeStyles.css'
+import { useParams } from 'react-router-dom';
 
 function Home() {
+
+    const { id: shelveId } = useParams();
     const [books, setBooks] = useState([]);
     const [newBook, setNewBook] = useState({
         title: '',
         author: '',
         isbn: '',
-        publicationDate: ''
+        publicationDate: '',
+        shelveId: '',
+        shelve: {
+            id: '',
+            shelveName: ''
+        }
+    });
+    const [shelve, setShelve] = useState({
+        id: '',
+        shelveName:''
     });
     const [updateBook, setUpdateBook] = useState({});
     const [selectedBook, setSelectedBook] = useState(null);
@@ -20,18 +32,32 @@ function Home() {
 
     const getAllBooks = async () => {
         try {
-          const response = await axios.get(apiBaseUrl);
+          const response = await axios.get(`${apiBaseUrl}/byShelve/${shelveId}`);
           setBooks(response.data);
         } catch (error) {
           console.error(error);
         }
     };
 
+    const getShelveData = async() => {
+        try {
+            const response = await axios.get(`http://localhost:5029/api/Shelve/${shelveId}`);
+            setShelve(response.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         getAllBooks();
+        getShelveData();
     }, []);
 
     const addBook = async () => {
+        newBook.shelveId = shelveId;
+        newBook.shelve.id = shelveId;
+        newBook.shelve.shelveName = shelve.shelveName
+        console.log(newBook);
         try {
           await axios.post(apiBaseUrl, newBook);
           setNewBook({});
@@ -98,7 +124,7 @@ function Home() {
         <div className='addnewbook'>
             {isAddBookPopupOpen && (
                 <div className="add-book-popup">
-                    <h2>Add New Book</h2>
+                    <h2>Add New Book to {shelve.shelveName}</h2>
                     <div className="input-group">
                         <input type="text" placeholder="Title" value={newBook.title || ''} onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}/>
                         <input type="text" placeholder="Author" value={newBook.author || ''} onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}/>

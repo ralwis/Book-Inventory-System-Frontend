@@ -9,19 +9,19 @@ function Home() {
     const { id: shelveId } = useParams();
     const [books, setBooks] = useState([]);
     const [newBook, setNewBook] = useState({
-        title: '',
-        author: '',
-        isbn: '',
-        publicationDate: '',
-        shelveId: '',
-        shelve: {
-            id: '',
-            shelveName: ''
+        Title: '',
+        Author: '',
+        ISBN: '',
+        PublicationDate: '',
+        ShelveId: '',
+        Shelve: {
+            ID: '',
+            ShelveName: ''
         }
     });
     const [shelve, setShelve] = useState({
-        id: '',
-        shelveName:''
+        ID: '',
+        ShelveName:''
     });
     const [updateBook, setUpdateBook] = useState({});
     const [selectedBook, setSelectedBook] = useState(null);
@@ -54,9 +54,9 @@ function Home() {
     }, []);
 
     const addBook = async () => {
-        newBook.shelveId = shelveId;
-        newBook.shelve.id = shelveId;
-        newBook.shelve.shelveName = shelve.shelveName
+        newBook.ShelveId = shelveId;
+        newBook.Shelve.ID = shelveId;
+        newBook.Shelve.ShelveName = shelve.ShelveName
         console.log(newBook);
         try {
           await axios.post(apiBaseUrl, newBook);
@@ -68,11 +68,11 @@ function Home() {
         }
     };
 
-    const deleteBook = async (id) => {
+    const deleteBook = async (ID) => {
         const confirmDelete = window.confirm('Are you sure to delete this book?');
         if (confirmDelete) {
             try {
-                axios.delete(`${apiBaseUrl}/${id}`).then(() => {
+                axios.delete(`${apiBaseUrl}/${ID}`).then(() => {
                     getAllBooks();
                 });
             } catch (error) {
@@ -95,7 +95,7 @@ function Home() {
     const updateSelectedBook = async () => {
         if (selectedBook) {
           try {
-            await axios.put(`${apiBaseUrl}/${selectedBook.id}`, updateBook);
+            await axios.put(`${apiBaseUrl}/${selectedBook.ID}`, updateBook);
             setUpdateBook({});
             setSelectedBook(null);
             getAllBooks();
@@ -113,6 +113,8 @@ function Home() {
     const closeAddBookPopup = () => {
         setIsAddBookPopupOpen(false);
     };
+
+    console.log(books);
     
   return (
     <div>
@@ -124,14 +126,14 @@ function Home() {
         <div className='addnewbook'>
             {isAddBookPopupOpen && (
                 <div className="add-book-popup">
-                    <h2>Add New Book to {shelve.shelveName}</h2>
+                    <h2>Add New Book to {shelve.ShelveName}</h2>
                     <div className="input-group">
-                        <input type="text" placeholder="Title" value={newBook.title || ''} onChange={(e) => setNewBook({ ...newBook, title: e.target.value })}/>
-                        <input type="text" placeholder="Author" value={newBook.author || ''} onChange={(e) => setNewBook({ ...newBook, author: e.target.value })}/>
+                        <input type="text" placeholder="Title" value={newBook.Title || ''} onChange={(e) => setNewBook({ ...newBook, Title: e.target.value })}/>
+                        <input type="text" placeholder="Author" value={newBook.Author || ''} onChange={(e) => setNewBook({ ...newBook, Author: e.target.value })}/>
                     </div>
                     <div className="input-group">
-                        <input type="text" placeholder="ISBN" value={newBook.isbn || ''} onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })}/>
-                        <input type="date" placeholder="Publication Date" value={newBook.publicationDate || ''} onChange={(e) => setNewBook({ ...newBook, publicationDate: e.target.value })}/>
+                        <input type="text" placeholder="ISBN" value={newBook.ISBN || ''} onChange={(e) => setNewBook({ ...newBook, ISBN: e.target.value })}/>
+                        <input type="date" placeholder="Publication Date" value={newBook.PublicationDate || ''} onChange={(e) => setNewBook({ ...newBook, PublicationDate: e.target.value })}/>
                     </div>
                     <div className="buttons">
                         <button onClick={addBook}>Add Book</button>
@@ -146,12 +148,12 @@ function Home() {
                 <div className="add-book-popup">
                     <h2>Edit Book</h2>
                     <div className="input-group">
-                        <input type="text" placeholder="Title" value={updateBook.title || ''} onChange={(e) => setUpdateBook({ ...updateBook, title: e.target.value })} />
-                        <input type="text" placeholder="Author" value={updateBook.author || ''} onChange={(e) => setUpdateBook({ ...updateBook, author: e.target.value })}/>
+                        <input type="text" placeholder="Title" value={updateBook.Title || ''} onChange={(e) => setUpdateBook({ ...updateBook, Title: e.target.value })} />
+                        <input type="text" placeholder="Author" value={updateBook.Author || ''} onChange={(e) => setUpdateBook({ ...updateBook, Author: e.target.value })}/>
                     </div>
                     <div className="input-group">
-                        <input type="text" placeholder="ISBN" value={updateBook.isbn || ''} onChange={(e) => setUpdateBook({ ...updateBook, isbn: e.target.value })}/>
-                        <input type="date" placeholder="Publication Date" value={updateBook.publicationDate || ''} onChange={(e) => setUpdateBook({ ...updateBook, publicationDate: e.target.value })}/>
+                        <input type="text" placeholder="ISBN" value={updateBook.ISBN || ''} onChange={(e) => setUpdateBook({ ...updateBook, ISBN: e.target.value })}/>
+                        <input type="date" placeholder="Publication Date" value={updateBook.PublicationDate || ''} onChange={(e) => setUpdateBook({ ...updateBook, PublicationDate: e.target.value })}/>
                     </div>
                     <div className="buttons">
                         <button onClick={updateSelectedBook}>Update Book</button>
@@ -171,14 +173,14 @@ function Home() {
                     <th>Delete</th>
                 </tr>
                 {books.map((book) => (
-                <tr key={book.id}>
-                    <td>{book.title}</td>
-                    <td>{book.author}</td>
+                <tr key={book.ID}>
+                    <td>{book.Title}</td>
+                    <td>{book.Author}</td>
                     <td>
                         <button className="edit-button" onClick={() => editBook(book)}>Edit</button>
                     </td>
                     <td>
-                        <button className="delete-button" onClick={() => deleteBook(book.id)}>Delete</button>
+                        <button className="delete-button" onClick={() => deleteBook(book.ID)}>Delete</button>
                     </td>
                 </tr>
                 ))}

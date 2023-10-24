@@ -42,6 +42,8 @@ function DashBoard(){
         setIsAddShelveOpen(false);
     };
 
+    console.log(shelve.data)
+
     return(
         <div>
             <div className='navbar'>
@@ -62,7 +64,7 @@ function DashBoard(){
             </div>
 
             <div className='shelvesContainer'>
-                {shelve.data?.map(({id, shelveName}) => (<Link to={`/shelve/${id}`} key={id}><div className='shelveCard'><h4>{shelveName}</h4></div></Link>))}
+                {shelve.data?.map(({Id, ShelveName}) => (<Link to={`/shelve/${Id}`} key={Id}><div className='shelveCard'><h4>{ShelveName}</h4></div></Link>))}
             </div>
         </div>
     )

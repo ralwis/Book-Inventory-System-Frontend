@@ -1,8 +1,8 @@
-import React from 'react'
+import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import './HomeStyles.css'
-import { useParams } from 'react-router-dom';
+import './HomeStyles.css';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Home() {
 
@@ -28,11 +28,18 @@ function Home() {
     const [isEditing, setIsEditing] = useState(false);
     const [isAddBookPopupOpen, setIsAddBookPopupOpen] = useState(false);
 
+    const token = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")).Token : "";
+
     const apiBaseUrl = 'http://localhost:5029/api/Books';
+    const navigate = useNavigate();
 
     const getAllBooks = async () => {
         try {
-          const response = await axios.get(`${apiBaseUrl}/byShelve/${shelveId}`);
+          const response = await axios.get(`${apiBaseUrl}/byShelve/${shelveId}`, {
+            headers: {
+                Authorization: `Bearer ${token}` 
+            }
+          });
           setBooks(response.data);
         } catch (error) {
           console.error(error);
@@ -41,7 +48,11 @@ function Home() {
 
     const getShelveData = async() => {
         try {
-            const response = await axios.get(`http://localhost:5029/api/Shelve/${shelveId}`);
+            const response = await axios.get(`http://localhost:5029/api/Shelve/${shelveId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` 
+                }
+            });
             setShelve(response.data);
         } catch (error) {
             console.log(error);
@@ -57,7 +68,7 @@ function Home() {
         newBook.ShelveId = shelveId;
         newBook.Shelve.ID = shelveId;
         newBook.Shelve.ShelveName = shelve.ShelveName
-        console.log(newBook);
+
         try {
           await axios.post(apiBaseUrl, newBook);
           setNewBook({});
@@ -114,13 +125,19 @@ function Home() {
         setIsAddBookPopupOpen(false);
     };
 
-    console.log(books);
+    const logOut = () => {
+        localStorage.removeItem("userData");
+        navigate('/login');
+    }
     
   return (
     <div>
         <div className='navbar'>
             <h2>Books Inventory System</h2>
-            <button onClick={openAddBookPopup}>Add Book</button>
+            <div>
+                <button onClick={openAddBookPopup}>Add Book</button>
+                <button onClick={logOut}>Logout</button>
+            </div>
         </div>
 
         <div className='addnewbook'>

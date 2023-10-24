@@ -1,0 +1,71 @@
+.form-container {
+    width: 360px;
+    background-color: white;
+    margin: auto;
+    margin-top: 10%;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    padding: 10px;
+  }
+  
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding: 10px;
+  }
+  
+  .success-message {
+    font-family: "Roboto", sans-serif;
+    background-color: #3f89f8;
+    padding: 15px;
+    color: white;
+    text-align: center;
+  }
+  
+  .form-field {
+    margin: 10px 0 10px 0;
+    padding: 15px;
+    font-size: 16px;
+    border: 0;
+    font-family: "Roboto", sans-serif;
+  }
+
+  .form-submit-field {
+    margin: 10px 0 10px 0;
+    padding: 15px;
+    font-size: 16px;
+    border: 0;
+    font-family: "Roboto", sans-serif;
+  }
+
+  .form-submit-field:hover {
+    background-color: #333;
+    color: #f2f2f2;
+  }
+  
+  span {
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    color: red;
+    margin-bottom: 15px;
+  }
+  
+  input {
+    background: #f2f2f2;
+  }
+  
+  .error {
+    border-style: solid;
+    border: 2px solid #ffa4a4;
+  }
+  
+  button {
+    background: #d7d9d7;
+    color: black;
+    cursor: pointer;
+    height: 35px;
+  }
+  
+  button:disabled {
+    cursor: default;
+  }

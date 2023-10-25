@@ -14,8 +14,9 @@ function Home() {
         ISBN: '',
         PublicationDate: '',
         ShelveId: '',
+        ImageUrl: '',
         Shelve: {
-            ID: '',
+            ID: '',          // Initialize ID to an empty string
             ShelveName: ''
         }
     });
@@ -70,8 +71,23 @@ function Home() {
         newBook.Shelve.ShelveName = shelve.ShelveName
 
         try {
-          await axios.post(apiBaseUrl, newBook);
-          setNewBook({});
+          await axios.post(apiBaseUrl, newBook, {
+            headers: {
+                Authorization: `Bearer ${token}` 
+            }
+        });
+          setNewBook({
+            Title: '',
+            Author: '',
+            ISBN: '',
+            PublicationDate: '',
+            ShelveId: '',
+            ImageUrl: '',
+            Shelve: {
+              ID: '',
+              ShelveName: ''
+            }});
+
           getAllBooks();
           closeAddBookPopup();
         } catch (error) {
@@ -83,7 +99,11 @@ function Home() {
         const confirmDelete = window.confirm('Are you sure to delete this book?');
         if (confirmDelete) {
             try {
-                axios.delete(`${apiBaseUrl}/${ID}`).then(() => {
+                axios.delete(`${apiBaseUrl}/${ID}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}` 
+                    }
+                }).then(() => {
                     getAllBooks();
                 });
             } catch (error) {
@@ -106,7 +126,11 @@ function Home() {
     const updateSelectedBook = async () => {
         if (selectedBook) {
           try {
-            await axios.put(`${apiBaseUrl}/${selectedBook.ID}`, updateBook);
+            await axios.put(`${apiBaseUrl}/${selectedBook.ID}`, updateBook, {
+                headers: {
+                    Authorization: `Bearer ${token}` 
+                }
+              });
             setUpdateBook({});
             setSelectedBook(null);
             getAllBooks();
@@ -152,6 +176,9 @@ function Home() {
                         <input type="text" placeholder="ISBN" value={newBook.ISBN || ''} onChange={(e) => setNewBook({ ...newBook, ISBN: e.target.value })}/>
                         <input type="date" placeholder="Publication Date" value={newBook.PublicationDate || ''} onChange={(e) => setNewBook({ ...newBook, PublicationDate: e.target.value })}/>
                     </div>
+                    <div className="input-group">
+                        <input id="imageUrl" type="text" placeholder="Image Url" value={newBook.ImageUrl || ''} onChange={(e) => setNewBook({ ...newBook, ImageUrl: e.target.value })}/>
+                    </div>
                     <div className="buttons">
                         <button onClick={addBook}>Add Book</button>
                         <button onClick={closeAddBookPopup} className="cancel">Cancel</button>
@@ -171,6 +198,9 @@ function Home() {
                     <div className="input-group">
                         <input type="text" placeholder="ISBN" value={updateBook.ISBN || ''} onChange={(e) => setUpdateBook({ ...updateBook, ISBN: e.target.value })}/>
                         <input type="date" placeholder="Publication Date" value={updateBook.PublicationDate || ''} onChange={(e) => setUpdateBook({ ...updateBook, PublicationDate: e.target.value })}/>
+                    </div>
+                    <div className="input-group">
+                        <input id="imageUrl" type="text" placeholder="Image Url" value={updateBook.ImageUrl || ''} onChange={(e) => setUpdateBook({ ...updateBook, ImageUrl: e.target.value })}/>
                     </div>
                     <div className="buttons">
                         <button onClick={updateSelectedBook}>Update Book</button>

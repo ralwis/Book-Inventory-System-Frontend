@@ -16,7 +16,7 @@ function Home() {
         ShelveId: '',
         ImageUrl: '',
         Shelve: {
-            ID: '',          // Initialize ID to an empty string
+            ID: '',          
             ShelveName: ''
         }
     });
@@ -157,9 +157,9 @@ function Home() {
   return (
     <div>
         <div className='navbar'>
-            <h2>Books Inventory System</h2>
+            <h1>Books Inventory System</h1>
             <div>
-                <button onClick={openAddBookPopup}>Add Book</button>
+                <button id='addNewShelve' onClick={openAddBookPopup}>Add Book</button>
                 <button onClick={logOut}>Logout</button>
             </div>
         </div>
@@ -211,28 +211,24 @@ function Home() {
             
         </div>
 
-        <div className='booktable'>
-            <table>
-                <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                </tr>
+        <div className='bookcards'>
                 {books.map((book) => (
-                <tr key={book.ID}>
-                    <td>{book.Title}</td>
-                    <td>{book.Author}</td>
-                    <td>
-                        <button className="edit-button" onClick={() => editBook(book)}>Edit</button>
-                    </td>
-                    <td>
-                        <button className="delete-button" onClick={() => deleteBook(book.ID)}>Delete</button>
-                    </td>
-                </tr>
+                    <div className="book-card" key={book.ID}>
+                        <div className="book-image" style={{ backgroundImage: `url(${book.ImageUrl})` }}>
+                            <div className="book-details">
+                                <h3 id='homeBookTitle'>{book.Title}</h3>
+                                <h5>{book.Author}</h5>
+                                <span>ISBN: {book.ISBN}</span>
+                                <span>Publication Date: {book.PublicationDate}</span>
+                                <div className="buttons">
+                                    <button className="edit-button" onClick={() => editBook(book)}>Edit</button>
+                                    <button className="delete-button" onClick={() => deleteBook(book.ID)}>Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 ))}
-            </table>
-        </div>
+            </div>
     </div>
   )
 }

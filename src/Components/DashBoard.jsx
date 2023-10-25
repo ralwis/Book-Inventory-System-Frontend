@@ -4,12 +4,16 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 
 function DashBoard(){
-    const [shelve, setShelve] = useState({
-        shelveName:''
-    });
+    const [shelves, setShelves] = useState([]);
+    const [bookCounts, setBookCounts] = useState({});
+    const [shelveName, setShelveName] = useState('');
     const [isAddShelveOpen, setIsAddShelveOpen] = useState(false);
 
     const token = localStorage.getItem("userData") ? JSON.parse(localStorage.getItem("userData")).Token : "";
+
+    const apiBaseUrl = 'http://localhost:5029/api/Shelve';
+    const apiBooksBaseUrl = 'http://localhost:5029/api/Books';
+    const navigate = useNavigate();
 
     const getShelvesData = async() =>{
         try {
@@ -18,32 +22,43 @@ function DashBoard(){
                     Authorization: `Bearer ${token}` 
                 }
             });
-            setShelve(response);
+            setShelves(response.data);
+
+            const counts = {};
+            for (const shelf of response.data) {
+                const countResponse = await axios.get(`${apiBooksBaseUrl}/${shelf.Id}/bookCount`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                counts[shelf.Id] = countResponse.data;
+            }
+            setBookCounts(counts);
         } catch (error) {
-            
+            console.error(error);
         }
     }
 
     const addShelve = async () => {
         try {
-            await axios.post(apiBaseUrl, shelve, {
+            await axios.post(apiBaseUrl, { shelveName }, {
                 headers: {
-                    Authorization: `Bearer ${token}` 
+                    Authorization: `Bearer ${token}`
                 }
             });
             closeAddShelve();
             getShelvesData();
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
-    const apiBaseUrl = 'http://localhost:5029/api/Shelve';
-    const navigate = useNavigate();
+    // const apiBaseUrl = 'http://localhost:5029/api/Shelve';
+    // const navigate = useNavigate();
 
-    useEffect(()=>{
+    useEffect(() => {
         getShelvesData();
-    },[])
+    }, []);
 
     const openAddShelve = () => {
         setIsAddShelveOpen(true);
@@ -51,6 +66,7 @@ function DashBoard(){
 
     const closeAddShelve = () => {
         setIsAddShelveOpen(false);
+        setShelveName('');
     };
 
     const logOut = () => {
@@ -71,7 +87,11 @@ function DashBoard(){
             <div className='addNewShelve'>
                 {isAddShelveOpen && (
                     <div className="add-shelve-popup">
-                        <span>Add Shelve</span><input value={shelve.shelveName} onChange={(e) => setShelve({...shelve, shelveName: e.target.value})}/>
+                        <span>Add Shelve</span>
+                        <input
+                            value={shelveName}
+                            onChange={(e) => setShelveName(e.target.value)}
+                        />
                         <div className="buttons">
                             <button className="addButton" onClick={addShelve}>Add</button>
                             <button className="cancelButton" onClick={closeAddShelve}>Cancel</button>
@@ -81,7 +101,14 @@ function DashBoard(){
             </div>
 
             <div className='shelvesContainer'>
-                {shelve.data?.map(({Id, ShelveName}) => (<Link to={`/shelve/${Id}`} key={Id}><div className='shelveCard'><h4>{ShelveName}</h4></div></Link>))}
+                {shelves.map(({ Id, ShelveName }) => (
+                    <Link to={`/shelve/${Id}`} key={Id}>
+                        <div className='shelveCard'>
+                            <h4>{ShelveName}</h4>
+                            <p>Books: {bookCounts[Id] || 0}</p> {/* Display the book count */}
+                        </div>
+                    </Link>
+                ))}
             </div>
         </div>
     )
